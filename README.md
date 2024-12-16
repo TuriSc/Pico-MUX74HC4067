@@ -1,6 +1,6 @@
 # Pico MUX74HC4067
 
-A C library for controlling the 74HC4067 multiplexer/demultiplexer on the Raspberry Pi Pico (RP2040) a nd Raspberry Pi Pico2 (RP2350). Multiple simultaneous muxers are supported.
+A C library for controlling the 74HC4067 multiplexer/demultiplexer on the Raspberry Pi Pico (RP2040) and Raspberry Pi Pico2 (RP2350). Multiple simultaneous muxers are supported.
 
 This repository is a C version for Raspberry Pi Pico SDK of the MUX74HC4067 Arduino library, which was originally written by Nick Lamprianidis. The original library can be found at [nlamprian/MUX74HC4067/](https://github.com/nlamprian/MUX74HC4067/).
 
