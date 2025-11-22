@@ -17,4 +17,5 @@ This repository is released under the MIT license, which is the same license as 
 
 
 ### Version history
+- 2025.11.22 - v1.0.1 - Add null pointer checks and cleanup function
 - 2024.12.03 - v1.0.0 - First release

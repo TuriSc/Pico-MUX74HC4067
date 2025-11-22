@@ -145,6 +145,13 @@ bool mux74hc4067_is_released(mux74hc4067_t* mux, int8_t chan_pin);
  */
 bool mux74hc4067_is_pressed(mux74hc4067_t* mux, int8_t chan_pin);
 
+/**
+ * Destroys a MUX74HC4067 instance and frees its resources.
+ *
+ * @param mux The MUX74HC4067 instance to destroy.
+ */
+void mux74hc4067_destroy(mux74hc4067_t* mux);
+
 #ifdef __cplusplus
 }
 #endif

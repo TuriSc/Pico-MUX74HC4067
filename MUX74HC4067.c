@@ -12,10 +12,11 @@
  * @param s2 The third control pin of the multiplexer. -1 if not used.
  * @param s3 The fourth control pin of the multiplexer. -1 if not used.
  *
- * @return A pointer to the newly created MUX74HC4067 instance.
+ * @return A pointer to the newly created MUX74HC4067 instance, or NULL on failure.
  */
 mux74hc4067_t* mux74hc4067_create(uint8_t en, int8_t s0, int8_t s1, int8_t s2, int8_t s3) {
     mux74hc4067_t* mux = malloc(sizeof(mux74hc4067_t));
+    if (!mux) return NULL;
     mux->enable_pin = en;
     gpio_init(en);
     gpio_set_dir(en, GPIO_OUT);
@@ -49,6 +50,8 @@ mux74hc4067_t* mux74hc4067_create(uint8_t en, int8_t s0, int8_t s1, int8_t s2, i
  * @param set Whether to enable the connection with the SIG pin (1) or not (0).
  */
 void mux74hc4067_set_channel(mux74hc4067_t* mux, int8_t pin, uint8_t set) {
+    if (!mux) return;
+    
     gpio_put(mux->enable_pin, 1);
     mux->current_channel = pin;
 
@@ -70,6 +73,8 @@ void mux74hc4067_set_channel(mux74hc4067_t* mux, int8_t pin, uint8_t set) {
  * @param mux The MUX74HC4067 instance to enable the connection for.
  */
 void mux74hc4067_enable(mux74hc4067_t* mux) {
+    if (!mux) return;
+    
     mux->enable_status = 1; // ENABLED
     gpio_put(mux->enable_pin, 0);
 }
@@ -80,6 +85,8 @@ void mux74hc4067_enable(mux74hc4067_t* mux) {
  * @param mux The MUX74HC4067 instance to disable the connection for.
  */
 void mux74hc4067_disable(mux74hc4067_t* mux) {
+    if (!mux) return;
+    
     mux->enable_status = 0; // DISABLED
     gpio_put(mux->enable_pin, 1);
 }
@@ -147,9 +154,11 @@ void mux74hc4067_signal_pin(mux74hc4067_t* mux, uint8_t sig, uint8_t mode, uint8
  * @param mux The MUX74HC4067 instance to read data from.
  * @param chan_pin The channel to read data from.
  *
- * @return The data read from the channel.
+ * @return The data read from the channel, or -1 on error.
  */
 int16_t mux74hc4067_read(mux74hc4067_t* mux, int8_t chan_pin) {
+    if (!mux) return -1;
+    
     int16_t data;
     uint8_t last_channel;
     uint8_t last_en_status = mux->enable_status;
@@ -187,6 +196,8 @@ int16_t mux74hc4067_read(mux74hc4067_t* mux, int8_t chan_pin) {
  * @return 0 on success, -1 on failure.
  */
 int8_t mux74hc4067_write(mux74hc4067_t* mux, int8_t chan_pin, uint8_t data, int8_t type) {
+    if (!mux) return -1;
+    
     if (mux->signal_mode == MODE_INPUT || mux->signal_mode == MODE_INPUT_PULLUP) {
         return -1;
     }
@@ -217,6 +228,8 @@ int8_t mux74hc4067_write(mux74hc4067_t* mux, int8_t chan_pin, uint8_t data, int8
  * @param mux The MUX74HC4067 instance to check the timing for.
  */
 void mux74hc4067_check_timing(mux74hc4067_t* mux) {
+    if (!mux) return;
+    
     if (mux->signal_pin_status == 1) {
         // read the state of the switch/button:
         int currentState = gpio_get(mux->signal_pin);
@@ -255,6 +268,8 @@ void mux74hc4067_check_timing(mux74hc4067_t* mux) {
  * @return True if the button is released, false otherwise.
  */
 bool mux74hc4067_is_released(mux74hc4067_t* mux, int8_t chan_pin) {
+    if (!mux) return false;
+    
     bool data = false;
     uint8_t last_channel;
     uint8_t last_en_status = mux->enable_status;
@@ -280,6 +295,8 @@ bool mux74hc4067_is_released(mux74hc4067_t* mux, int8_t chan_pin) {
  * @return True if the button is pressed, false otherwise.
  */
 bool mux74hc4067_is_pressed(mux74hc4067_t* mux, int8_t chan_pin) {
+    if (!mux) return false;
+    
     bool data = false;
     uint8_t last_channel;
     uint8_t last_en_status = mux->enable_status;
@@ -294,5 +311,17 @@ bool mux74hc4067_is_pressed(mux74hc4067_t* mux, int8_t chan_pin) {
     }
 
     return data;
+}
+
+/**
+ * Destroys a MUX74HC4067 instance and frees its resources.
+ *
+ * @param mux The MUX74HC4067 instance to destroy.
+ */
+void mux74hc4067_destroy(mux74hc4067_t* mux) {
+    if (!mux) return;
+    
+    mux74hc4067_disable(mux);
+    free(mux);
 }
 
